@@ -16,6 +16,7 @@ import com.socialcodia.socialmedia.R;
 import com.socialcodia.socialmedia.api.ApiClient;
 import com.socialcodia.socialmedia.models.ModelUser;
 import com.socialcodia.socialmedia.pojos.ResponseLogin;
+import com.socialcodia.socialmedia.storage.SharedPrefHandler;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText inputEmail,inputPassword;
     private Button btnLogin;
     private ProgressBar progressBar2;
+    private SharedPrefHandler sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,10 @@ public class LoginActivity extends AppCompatActivity {
         inputPassword = findViewById(R.id.inputPassword);
         btnLogin = findViewById(R.id.btnLogin);
         progressBar2 = findViewById(R.id.progressBar2);
+        sp = SharedPrefHandler.getInstance(getApplicationContext());
+
+        if(sp.isLoggedIn())
+            sendToMain();
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                     else
                     {
                         ModelUser user = resp.getUser();
+                        sp.saveUser(user);
                         Toast.makeText(LoginActivity.this, "Welcome "+String.valueOf(user.getName()), Toast.LENGTH_SHORT).show();
                         sendToMain();
                     }
